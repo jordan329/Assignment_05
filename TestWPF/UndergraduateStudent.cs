@@ -9,6 +9,8 @@ namespace TestWPF
     class UndergraduateStudent : Person
     {
         public Course[] courses;
+        public int studentId;
+
         public void addCourse()
         {
 

@@ -9,7 +9,7 @@ namespace TestWPF
     class GraduateStudent : Person
     {
         public Course[] courses;
-
+        public int studentId;
         public void addCourse()
         {
 

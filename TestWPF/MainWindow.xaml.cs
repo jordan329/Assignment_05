@@ -50,6 +50,19 @@ namespace TestWPF
         }
         private void studentSelected()
         {
+            // having trouble changing combobox selection programatically
+            //          TODO:
+            //               gender comboBob && student type comboBox
+            if (people[this.currentStudent].GetType().Name=="GraduateStudent")
+            {
+                //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "GraduateStudent");
+                StudentIDTextBox.Text = (people[this.currentStudent] as GraduateStudent).studentId.ToString();
+            }
+            if (people[this.currentStudent].GetType().Name == "UndergraduateStudent")
+            {
+                //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "UnderGraduateStudent");
+                StudentIDTextBox.Text = (people[this.currentStudent] as UndergraduateStudent).studentId.ToString();
+            }
             FirstNameTextBox.Text = people[this.currentStudent].FirstName;
             LastNameTextBox.Text = people[this.currentStudent].LastName;
             AgeTextBox.Text = people[this.currentStudent].Age.ToString();
@@ -63,6 +76,10 @@ namespace TestWPF
                 student.Age = age;
                 student.FirstName = FirstNameTextBox.Text;
                 student.LastName = LastNameTextBox.Text;
+                int id;
+                int.TryParse(StudentIDTextBox.Text, out id);
+                student.studentId = id;
+
                 people.Add(student);
             }
             else
@@ -73,6 +90,9 @@ namespace TestWPF
                 student.Age = age;
                 student.FirstName = FirstNameTextBox.Text;
                 student.LastName = LastNameTextBox.Text;
+                int id;
+                int.TryParse(StudentIDTextBox.Text, out id);
+                student.studentId = id;
                 people.Add(student);
             }
 
