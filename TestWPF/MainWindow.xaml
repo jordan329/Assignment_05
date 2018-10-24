@@ -26,7 +26,7 @@
         <TextBox x:Name="AgeTextBox"  HorizontalAlignment="Left" Height="23" Margin="308,251,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label Content="Age" HorizontalAlignment="Left" Margin="210,250,0,0" VerticalAlignment="Top"/>
         <Label Content="Level" HorizontalAlignment="Left" Margin="210,295,0,0" VerticalAlignment="Top"/>
-        <ComboBox HorizontalAlignment="Left" Margin="308,295,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged" Name="StudentTypeComboBox">
+        <ComboBox HorizontalAlignment="Left" Margin="308,295,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="StudentTypeComboBox_SelectionChanged" Name="StudentTypeComboBox">
             <ComboBoxItem IsSelected="True" Content="Undergraduate"/>
             <ComboBoxItem Content="Graduate"/>
         </ComboBox>

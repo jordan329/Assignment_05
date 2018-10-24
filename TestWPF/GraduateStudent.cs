@@ -8,11 +8,17 @@ namespace TestWPF
 {
     class GraduateStudent : Person
     {
-        public Course[] courses;
+        public List<Course> courses = new List<Course>();
         public int studentId;
-        public void addCourse()
-        {
 
+        public void addCourse(int num, string name, int gpa, int credits)
+        {
+            if (num >= 1000 && num <= 4999)
+            {
+                Course course = new Course(num, name, gpa, credits);
+                courses.Add(course);
+            }
+            else { Console.WriteLine("invalid course number for GraduateStudent"); }
         }
     }
 }

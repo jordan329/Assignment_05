@@ -20,7 +20,7 @@ namespace TestWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        int currentStudent = 0;
+        int currentStudent = -1;
         int studentTypeIndex = 0;
         List<Person> people = new List<Person>();
 
@@ -40,33 +40,89 @@ namespace TestWPF
 
         private void AddCourseButton_Click(object sender, RoutedEventArgs e)
         {
+            int number, gpa, credits;
+            int.TryParse(CourseNumberTextBox.Text, out number);
+            int.TryParse(GPATextBox.Text, out gpa);
+            int.TryParse(CreditHoursTextBox.Text, out credits);
+            //getting exception here
+            if (people[currentStudent].GetType().Name == "GraduateStudent")
+            {                
+                (people[currentStudent] as GraduateStudent).addCourse(number, CourseNameTextBox.Text, gpa, credits);
+            }
+            else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
+            {
+                (people[currentStudent] as UndergraduateStudent).addCourse(number, CourseNameTextBox.Text, gpa, credits);
+            }
+
+
             //ensure student is selected, add the course info to the selected students courses
         }
-
         private void StudentsListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             currentStudent = this.StudentsListBox.SelectedIndex;
             studentSelected();
         }
+        private void StudentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            studentTypeIndex = StudentTypeComboBox.SelectedIndex;
+        }
         private void studentSelected()
+        {
+            populateStudentFields();
+            populateCourseList();            
+        }
+
+        private void populateCourseList()
+        {
+            CoursessListBox.Items.Clear();
+            if (people[currentStudent].GetType().Name == "GraduateStudent")
+            {
+                if ((people[currentStudent] as GraduateStudent).courses.Count() < 1)
+                {
+                    foreach (Course course in (people[currentStudent] as GraduateStudent).courses)
+                    {
+                        ListBoxItem courseListBoxItem = new ListBoxItem();
+                        courseListBoxItem.Content = course.CourseName;
+                        CoursessListBox.Items.Add(courseListBoxItem);
+                    }
+                }
+            }
+            else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
+            {
+                if ((people[currentStudent] as GraduateStudent).courses.Count() < 1)
+                {
+                    foreach (Course course in (people[currentStudent] as GraduateStudent).courses)
+                    {
+                        ListBoxItem courseListBoxItem = new ListBoxItem();
+                        courseListBoxItem.Content = course.CourseName;
+                        CoursessListBox.Items.Add(courseListBoxItem);
+                    }
+                }
+            }
+            else { Console.WriteLine("how did we get here?"); }
+        }
+
+        private void populateStudentFields()
         {
             // having trouble changing combobox selection programatically
             //          TODO:
             //               gender comboBob && student type comboBox
-            if (people[this.currentStudent].GetType().Name=="GraduateStudent")
+            if (this.currentStudent == -1) { return; }
+            if (people[currentStudent].GetType().Name == "GraduateStudent")
             {
                 //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "GraduateStudent");
                 StudentIDTextBox.Text = (people[this.currentStudent] as GraduateStudent).studentId.ToString();
             }
-            if (people[this.currentStudent].GetType().Name == "UndergraduateStudent")
+            if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
                 //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "UnderGraduateStudent");
-                StudentIDTextBox.Text = (people[this.currentStudent] as UndergraduateStudent).studentId.ToString();
+                StudentIDTextBox.Text = (people[currentStudent] as UndergraduateStudent).studentId.ToString();
             }
-            FirstNameTextBox.Text = people[this.currentStudent].FirstName;
-            LastNameTextBox.Text = people[this.currentStudent].LastName;
-            AgeTextBox.Text = people[this.currentStudent].Age.ToString();
+            FirstNameTextBox.Text = people[currentStudent].FirstName;
+            LastNameTextBox.Text = people[currentStudent].LastName;
+            AgeTextBox.Text = people[currentStudent].Age.ToString();
         }
+
         private void createPerson() {
             if(studentTypeIndex == 0)
             {
@@ -79,7 +135,6 @@ namespace TestWPF
                 int id;
                 int.TryParse(StudentIDTextBox.Text, out id);
                 student.studentId = id;
-
                 people.Add(student);
             }
             else
@@ -95,13 +150,6 @@ namespace TestWPF
                 student.studentId = id;
                 people.Add(student);
             }
-
-            //people.Add(person);
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            studentTypeIndex = StudentTypeComboBox.SelectedIndex;
-        }
+        }        
     }
 }
