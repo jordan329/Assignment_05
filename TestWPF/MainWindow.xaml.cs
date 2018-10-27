@@ -15,12 +15,10 @@ using System.Windows.Shapes;
 
 namespace TestWPF
 {
-    /// <summary>
-    /// MainWindow.xaml 
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
-        int currentStudent = -1;
+        int currentStudent = 0;
         int studentTypeIndex = 0;
         List<Person> people = new List<Person>();
 
@@ -34,7 +32,7 @@ namespace TestWPF
             ListBoxItem studentListBoxItem = new ListBoxItem();
             studentListBoxItem.Content = LastNameTextBox.Text + " " + FirstNameTextBox.Text;
             StudentsListBox.Items.Add(studentListBoxItem);
-            createPerson();            
+            CreatePerson();            
             //add either grad or undergrad to list of type person
         }
 
@@ -47,32 +45,31 @@ namespace TestWPF
             //getting exception here
             if (people[currentStudent].GetType().Name == "GraduateStudent")
             {                
-                (people[currentStudent] as GraduateStudent).addCourse(number, CourseNameTextBox.Text, gpa, credits);
+                (people[currentStudent] as GraduateStudent).AddCourse(number, CourseNameTextBox.Text, gpa, credits);
             }
             else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
-                (people[currentStudent] as UndergraduateStudent).addCourse(number, CourseNameTextBox.Text, gpa, credits);
+                (people[currentStudent] as UndergraduateStudent).AddCourse(number, CourseNameTextBox.Text, gpa, credits);
             }
-
-
             //ensure student is selected, add the course info to the selected students courses
+            PopulateCourseList();
         }
-        private void StudentsListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void StudentsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             currentStudent = this.StudentsListBox.SelectedIndex;
-            studentSelected();
+            StudentSelected();
         }
         private void StudentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             studentTypeIndex = StudentTypeComboBox.SelectedIndex;
         }
-        private void studentSelected()
+        private void StudentSelected()
         {
-            populateStudentFields();
-            populateCourseList();            
+            PopulateStudentFields();
+            PopulateCourseList();            
         }
 
-        private void populateCourseList()
+        private void PopulateCourseList()
         {
             CoursessListBox.Items.Clear();
             if (people[currentStudent].GetType().Name == "GraduateStudent")
@@ -89,9 +86,9 @@ namespace TestWPF
             }
             else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
-                if ((people[currentStudent] as GraduateStudent).courses.Count() < 1)
+                if ((people[currentStudent] as UndergraduateStudent).courses.Count() < 1)
                 {
-                    foreach (Course course in (people[currentStudent] as GraduateStudent).courses)
+                    foreach (Course course in (people[currentStudent] as UndergraduateStudent).courses)
                     {
                         ListBoxItem courseListBoxItem = new ListBoxItem();
                         courseListBoxItem.Content = course.CourseName;
@@ -102,28 +99,51 @@ namespace TestWPF
             else { Console.WriteLine("how did we get here?"); }
         }
 
-        private void populateStudentFields()
+        private void PopulateStudentFields()
         {
-            // having trouble changing combobox selection programatically
-            //          TODO:
-            //               gender comboBob && student type comboBox
             if (this.currentStudent == -1) { return; }
             if (people[currentStudent].GetType().Name == "GraduateStudent")
             {
-                //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "GraduateStudent");
+                StudentTypeComboBox.SelectedIndex = 1;
+                GenderCombo.SelectedIndex = 1;
                 StudentIDTextBox.Text = (people[this.currentStudent] as GraduateStudent).studentId.ToString();
+                if ((people[currentStudent] as GraduateStudent).Gender == 0)
+                {
+                    GenderCombo.SelectedIndex = 0;
+                }
+                else if ((people[currentStudent] as GraduateStudent).Gender == 1)
+                {
+                    GenderCombo.SelectedIndex = 1;
+                }
+                else
+                {
+                    GenderCombo.SelectedIndex = 2;
+                }
             }
             if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
-                //StudentTypeComboBox.SelectedItem = StudentTypeComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(comboBoxItem => (string)comboBoxItem.Content == "UnderGraduateStudent");
+                StudentTypeComboBox.SelectedIndex = 0;
+                GenderCombo.SelectedItem = 0;
                 StudentIDTextBox.Text = (people[currentStudent] as UndergraduateStudent).studentId.ToString();
+                if ((people[currentStudent] as UndergraduateStudent).Gender == 0)
+                {
+                    GenderCombo.SelectedIndex = 0;
+                }
+                else if ((people[currentStudent] as UndergraduateStudent).Gender == 1)
+                {
+                    GenderCombo.SelectedIndex = 1;
+                }
+                else
+                {
+                    GenderCombo.SelectedIndex = 2;
+                }
             }
             FirstNameTextBox.Text = people[currentStudent].FirstName;
             LastNameTextBox.Text = people[currentStudent].LastName;
             AgeTextBox.Text = people[currentStudent].Age.ToString();
         }
 
-        private void createPerson() {
+        private void CreatePerson() {
             if(studentTypeIndex == 0)
             {
                 UndergraduateStudent student = new UndergraduateStudent();
@@ -135,6 +155,8 @@ namespace TestWPF
                 int id;
                 int.TryParse(StudentIDTextBox.Text, out id);
                 student.studentId = id;
+                student.Gender = GenderCombo.SelectedIndex;
+
                 people.Add(student);
             }
             else
@@ -148,6 +170,8 @@ namespace TestWPF
                 int id;
                 int.TryParse(StudentIDTextBox.Text, out id);
                 student.studentId = id;
+                student.Gender = GenderCombo.SelectedIndex;
+
                 people.Add(student);
             }
         }        

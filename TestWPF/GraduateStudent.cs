@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace TestWPF
 {
-    class GraduateStudent : Person
+    class GraduateStudent : UndergraduateStudent
     {
-        public List<Course> courses = new List<Course>();
-        public int studentId;
+        public new List<Course> courses = new List<Course>();
+        public new int studentId;
 
-        public void addCourse(int num, string name, int gpa, int credits)
+        override public void AddCourse(int num, string name, int gpa, int credits)
         {
-            if (num >= 1000 && num <= 4999)
-            {
+            if (num >= 5000 && num <= 9999)
+            { 
                 Course course = new Course(num, name, gpa, credits);
                 courses.Add(course);
             }
