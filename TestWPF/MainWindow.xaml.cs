@@ -19,13 +19,14 @@ namespace TestWPF
     public partial class MainWindow : Window
     {
         int currentStudent = 0;
+        int currentCourse = 0;
         int studentTypeIndex = 0;
         List<Person> people = new List<Person>();
 
         public MainWindow()
         {
             InitializeComponent();
-        }
+        }    
 
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)
         {
@@ -34,8 +35,7 @@ namespace TestWPF
             StudentsListBox.Items.Add(studentListBoxItem);
             CreatePerson();            
             //add either grad or undergrad to list of type person
-        }
-
+        }    
         private void AddCourseButton_Click(object sender, RoutedEventArgs e)
         {
             int number, gpa, credits;
@@ -53,22 +53,73 @@ namespace TestWPF
             }
             //ensure student is selected, add the course info to the selected students courses
             PopulateCourseList();
+            TotalGPADisplay();
         }
         private void StudentsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             currentStudent = this.StudentsListBox.SelectedIndex;
             StudentSelected();
+            TotalGPADisplay();
         }
+        private void CoursessListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            currentCourse = this.CoursessListBox.SelectedIndex;
+            PopulateCourseFields();
+            TotalGPADisplay();
+        }       
         private void StudentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             studentTypeIndex = StudentTypeComboBox.SelectedIndex;
         }
-        private void StudentSelected()
-        {
-            PopulateStudentFields();
-            PopulateCourseList();            
-        }
+        private void CreatePerson() {
+            if(studentTypeIndex == 0)
+            {
+                UndergraduateStudent student = new UndergraduateStudent();
+                int age;
+                int.TryParse(AgeTextBox.Text, out age);
+                student.Age = age;
+                student.FirstName = FirstNameTextBox.Text;
+                student.LastName = LastNameTextBox.Text;
+                int id;
+                int.TryParse(StudentIDTextBox.Text, out id);
+                student.studentId = id;
+                student.Gender = GenderCombo.SelectedIndex;
 
+                people.Add(student);
+            }
+            else
+            {
+                GraduateStudent student = new GraduateStudent();
+                int age;
+                int.TryParse(AgeTextBox.Text, out age);
+                student.Age = age;
+                student.FirstName = FirstNameTextBox.Text;
+                student.LastName = LastNameTextBox.Text;
+                int id;
+                int.TryParse(StudentIDTextBox.Text, out id);
+                student.studentId = id;
+                student.Gender = GenderCombo.SelectedIndex;
+
+                people.Add(student);
+            }
+        }        
+        private void PopulateCourseFields()
+        {
+            if (people[currentStudent].GetType().Name == "GraduateStudent")
+            {
+                CourseNameTextBox.Text = (people[currentStudent] as GraduateStudent).courses[currentCourse].CourseName;
+                CourseNumberTextBox.Text = (people[currentStudent] as GraduateStudent).courses[currentCourse].CourseNumber.ToString();
+                GPATextBox.Text = (people[currentStudent] as GraduateStudent).courses[currentCourse].Gpa.ToString();
+                CreditHoursTextBox.Text = (people[currentStudent] as GraduateStudent).courses[currentCourse].Credits.ToString();
+            }
+            else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
+            {
+                CourseNameTextBox.Text = (people[currentStudent] as UndergraduateStudent).courses[currentCourse].CourseName;
+                CourseNumberTextBox.Text = (people[currentStudent] as UndergraduateStudent).courses[currentCourse].CourseNumber.ToString();
+                GPATextBox.Text = (people[currentStudent] as UndergraduateStudent).courses[currentCourse].Gpa.ToString();
+                CreditHoursTextBox.Text = (people[currentStudent] as UndergraduateStudent).courses[currentCourse].Credits.ToString();
+            }
+        }
         private void PopulateCourseList()
         {
             CoursessListBox.Items.Clear();
@@ -98,7 +149,6 @@ namespace TestWPF
             }
             else { Console.WriteLine("how did we get here?"); }
         }
-
         private void PopulateStudentFields()
         {
             if (this.currentStudent == -1) { return; }
@@ -142,38 +192,28 @@ namespace TestWPF
             LastNameTextBox.Text = people[currentStudent].LastName;
             AgeTextBox.Text = people[currentStudent].Age.ToString();
         }
-
-        private void CreatePerson() {
-            if(studentTypeIndex == 0)
+        private void TotalGPADisplay()
+        {
+            int totalCredits = 0;
+            int totalpoints = 0;
+            if (people[currentStudent].GetType().Name == "GraduateStudent")
             {
-                UndergraduateStudent student = new UndergraduateStudent();
-                int age;
-                int.TryParse(AgeTextBox.Text, out age);
-                student.Age = age;
-                student.FirstName = FirstNameTextBox.Text;
-                student.LastName = LastNameTextBox.Text;
-                int id;
-                int.TryParse(StudentIDTextBox.Text, out id);
-                student.studentId = id;
-                student.Gender = GenderCombo.SelectedIndex;
-
-                people.Add(student);
+                (people[currentStudent] as GraduateStudent).courses.ForEach(
+                (Course course) =>
+                {
+                    totalCredits += course.Credits; totalpoints += course.Gpa;
+                });
             }
-            else
+            if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
-                GraduateStudent student = new GraduateStudent();
-                int age;
-                int.TryParse(AgeTextBox.Text, out age);
-                student.Age = age;
-                student.FirstName = FirstNameTextBox.Text;
-                student.LastName = LastNameTextBox.Text;
-                int id;
-                int.TryParse(StudentIDTextBox.Text, out id);
-                student.studentId = id;
-                student.Gender = GenderCombo.SelectedIndex;
-
-                people.Add(student);
+                (people[currentStudent] as UndergraduateStudent).courses.ForEach(
+               (Course course) =>
+               {
+                   totalCredits += course.Credits; totalpoints += course.Gpa;
+               });
             }
-        }        
+            TotalGPATextBox.Text = (((float)totalCredits * (float)totalpoints / (float)totalCredits).ToString());
+        }
+        private void StudentSelected(){PopulateStudentFields();PopulateCourseList();}        
     }
 }

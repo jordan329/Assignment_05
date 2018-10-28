@@ -32,7 +32,7 @@
         </ComboBox>
         <Button Name="AddStudentButton" Content="Add a Student" HorizontalAlignment="Left" Margin="210,347,0,0" VerticalAlignment="Top" Width="218" Height="35" Click="AddStudentButton_Click"/>
         <Label Content="Courses List" HorizontalAlignment="Left" Margin="513,41,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="CoursessListBox" HorizontalAlignment="Left" Height="273" Margin="513,66,0,0" VerticalAlignment="Top" Width="171"/>
+        <ListBox x:Name="CoursessListBox" HorizontalAlignment="Left" Height="273" Margin="513,66,0,0" VerticalAlignment="Top" Width="171" SelectionChanged="CoursessListBox_SelectionChanged"/>
         <TextBox x:Name="CourseNameTextBox"  HorizontalAlignment="Left" Height="23" Margin="825,89,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label Content="Course Name" HorizontalAlignment="Left" Margin="718,89,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="CourseNumberTextBox"  HorizontalAlignment="Left" Height="23" Margin="825,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
