@@ -38,11 +38,16 @@ namespace TestWPF
         }    
         private void AddCourseButton_Click(object sender, RoutedEventArgs e)
         {
+
             int number, gpa, credits;
             int.TryParse(CourseNumberTextBox.Text, out number);
             int.TryParse(GPATextBox.Text, out gpa);
             int.TryParse(CreditHoursTextBox.Text, out credits);
-            //getting exception here
+            if(people.Count == 0)
+            {
+            //if fixes exception
+                return;
+            }
             if (people[currentStudent].GetType().Name == "GraduateStudent")
             {                
                 (people[currentStudent] as GraduateStudent).AddCourse(number, CourseNameTextBox.Text, gpa, credits);
@@ -52,6 +57,7 @@ namespace TestWPF
                 (people[currentStudent] as UndergraduateStudent).AddCourse(number, CourseNameTextBox.Text, gpa, credits);
             }
             //ensure student is selected, add the course info to the selected students courses
+
             PopulateCourseList();
             TotalGPADisplay();
         }
@@ -122,30 +128,24 @@ namespace TestWPF
         }
         private void PopulateCourseList()
         {
-            CoursessListBox.Items.Clear();
             if (people[currentStudent].GetType().Name == "GraduateStudent")
             {
-                if ((people[currentStudent] as GraduateStudent).courses.Count() < 1)
+                (people[currentStudent] as GraduateStudent).courses.ForEach(course =>
                 {
-                    foreach (Course course in (people[currentStudent] as GraduateStudent).courses)
-                    {
-                        ListBoxItem courseListBoxItem = new ListBoxItem();
-                        courseListBoxItem.Content = course.CourseName;
-                        CoursessListBox.Items.Add(courseListBoxItem);
-                    }
-                }
+                    ListBoxItem courseListBoxItem = new ListBoxItem();
+                    courseListBoxItem.Content = course.CourseName;
+                    CoursessListBox.Items.Add(courseListBoxItem);
+                });
             }
             else if (people[currentStudent].GetType().Name == "UndergraduateStudent")
             {
-                if ((people[currentStudent] as UndergraduateStudent).courses.Count() < 1)
+                (people[currentStudent] as UndergraduateStudent).courses.ForEach(course =>
                 {
-                    foreach (Course course in (people[currentStudent] as UndergraduateStudent).courses)
-                    {
-                        ListBoxItem courseListBoxItem = new ListBoxItem();
-                        courseListBoxItem.Content = course.CourseName;
-                        CoursessListBox.Items.Add(courseListBoxItem);
-                    }
-                }
+                    ListBoxItem courseListBoxItem = new ListBoxItem();
+                    courseListBoxItem.Content = course.CourseName;
+                    CoursessListBox.Items.Add(courseListBoxItem);
+                    Console.WriteLine(CoursessListBox.ToString());
+                });                             
             }
             else { Console.WriteLine("how did we get here?"); }
         }
@@ -212,7 +212,7 @@ namespace TestWPF
                    totalCredits += course.Credits; totalpoints += course.Gpa;
                });
             }
-            TotalGPATextBox.Text = (((float)totalCredits * (float)totalpoints / (float)totalCredits).ToString());
+            TotalGPATextBox.Text = ((totalCredits * (float)totalpoints / totalCredits).ToString());
         }
         private void StudentSelected(){PopulateStudentFields();PopulateCourseList();}        
     }
