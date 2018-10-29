@@ -20,9 +20,9 @@ namespace TestWPF
         private int gpa;
         private int credits;
         
-        public int CourseNumber { get; set; }
-        public string CourseName { get; set; }
-        public int Gpa { get; set; }
-        public int Credits { get; set; }
+        public int CourseNumber { get { return courseNumber; } }
+        public string CourseName { get { return courseName; } }
+        public int Gpa { get { return gpa; } }
+        public int Credits { get { return credits; } }
     }
 }
