@@ -18,7 +18,7 @@
         <TextBox x:Name="StudentIDTextBox"  HorizontalAlignment="Left" Height="23" Margin="308,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label Content="Student ID" HorizontalAlignment="Left" Margin="210,163,0,0" VerticalAlignment="Top"/>
         <Label Content="Gender" HorizontalAlignment="Left" Margin="210,209,0,0" VerticalAlignment="Top"/>
-        <ComboBox Name="GenderCombo" HorizontalAlignment="Left" Margin="308,209,0,0" VerticalAlignment="Top" Width="120">
+        <ComboBox x:Name="GenderCombo" HorizontalAlignment="Left" Margin="308,209,0,0" VerticalAlignment="Top" Width="120">
             <ComboBoxItem IsSelected="True">Male</ComboBoxItem>
             <ComboBoxItem>Female</ComboBoxItem> 
             <ComboBoxItem>Other</ComboBoxItem>
